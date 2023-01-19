@@ -19,18 +19,62 @@ public class GameManager : MonoBehaviour
     public int lives;
     public GameObject music;
     public GameObject slider;
+    public GameObject pauseScreen;
+    public Camera cam;
+    public TrailRenderer trail;
+
     // Start is called before the first frame update
     void Start()
     {
-        
-        
-        
+        cam = Camera.main;
+        trail = GetComponent<TrailRenderer>();
+        trail.Clear();
+    }
+
+    private void OnGUI()
+    {
+
+        Vector3 point = new Vector3();
+        Vector2 mousePos = new Vector2();
+        Event m_Event = Event.current;
+       
+        if(m_Event.type == EventType.MouseDrag)
+        {
+            mousePos.x = m_Event.mousePosition.x;
+            mousePos.y = cam.pixelHeight - m_Event.mousePosition.y;
+            trail.enabled = true;
+
+            point = cam.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, cam.nearClipPlane));
+            transform.position = point;
+            
+           
+           
+
+
+        }
+        else
+        {
+            trail.enabled = false;
+        }    
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (Time.timeScale == 0)
+            {
+                Time.timeScale = 1;
+                pauseScreen.SetActive(false);
+            }
+            else
+            {
+                Time.timeScale = 0;
+                pauseScreen.SetActive(true);
+            }
+            
+        }
     }
 
     public void UpdateScore(int scoreToAdd)
